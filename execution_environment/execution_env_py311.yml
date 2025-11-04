@@ -1,0 +1,45 @@
+---
+version: 3
+
+# 1. Start w1ith a standard, modern base image.
+# A UBI 9-based image is a good choice as python3.11 is available in its repos.
+images:
+  base_image: quay.io/ansible/ee-minimal-rhel9:latest
+
+# 2. Tell the EE build process to use python3.11 for its venv.
+# The base images are designed to respect this build argument.
+# This variable points to the interpreter we will install via bindep.txt.
+build_arg_defaults:
+  ANSIBLE_PYTHON_INTERPRETER: /usr/bin/python3.11
+
+# 3. Define all your dependencies.
+dependencies:
+  # Your collections.
+  # ansible-builder will read this and install them.
+  galaxy: requirements.yml
+
+  # Your Python dependencies.
+  # ansible-builder will pip install these into the 3.11 venv.
+  python: requirements.txt
+
+  # Your system-level dependencies.
+  # This is the most critical part for this solution.
+  system: bindep.txt
+options:
+  package_manager_path: /usr/bin/microdnf
+# 4. (Optional but recommended) Add verification steps.
+additional_build_steps:
+  append_steps: |
+    RUN echo "--- Verifying system Python ---"
+    RUN /usr/bin/python3.11 --version
+    RUN echo "--- Verifying Ansible venv Python ---"
+    # /opt/ansible/venv/bin/python is a symlink to the interpreter
+    RUN /opt/ansible/venv/bin/python --version
+    RUN echo "--- Verifying Ansible venv packages ---"
+    RUN /opt/ansible/venv/bin/pip list
+    COPY gcp-ssh-wrapper.sh /usr/local/bin/gcp-ssh-wrapper
+    COPY gcp-scp-wrapper.sh /usr/local/bin/gcp-scp-wrapper
+    COPY google-cloud-sdk.repo /etc/yum.repos.d/
+    RUN /usr/bin/microdnf install -y google-cloud-cli
+    RUN chmod a+x /usr/local/bin/gcp-ssh-wrapper
+    RUN chmod a+x /usr/local/bin/gcp-scp-wrapper

@@ -1,0 +1,7 @@
+# The Python 3.11 interpreter and pip
+python3.11
+python3.11-pip
+
+# System dependencies needed to build Python packages (e.g., C extensions)
+gcc
+python3.11-devel
