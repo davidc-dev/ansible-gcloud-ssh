@@ -19,4 +19,4 @@ for ssh_arg in "${@: 1: $# -3}" ; do
         fi
 done
 
-exec gcloud compute ssh $opts "sa_${service_account}@${host}" -- -C "${cmd}"
+exec gcloud compute ssh $opts "sa_${username}@${host}" -- -C "${cmd}"

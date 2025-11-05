@@ -9,8 +9,6 @@ dependencies:
 additional_build_steps:
   prepend_final: |
     COPY gcp-ssh-wrapper.sh /usr/local/bin/gcp-ssh-wrapper
-    COPY gcp-scp-wrapper.sh /usr/local/bin/gcp-scp-wrapper
     COPY google-cloud-sdk.repo /etc/yum.repos.d/
     RUN /usr/bin/microdnf install -y google-cloud-cli
     RUN chmod a+x /usr/local/bin/gcp-ssh-wrapper
-    RUN chmod a+x /usr/local/bin/gcp-scp-wrapper
