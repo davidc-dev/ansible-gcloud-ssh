@@ -6,8 +6,18 @@ options:
   package_manager_path: /usr/bin/microdnf
 dependencies:
   galaxy: requirements.yml
+  system: bindep.txt
+build_arg_defaults:
+  ANSIBLE_GALAXY_CLI_COLLECTION_OPTS: "--pre"
 additional_build_steps:
+  prepend_galaxy:
+    - ENV ANSIBLE_GALAXY_SERVER_LIST="automation_hub, galaxy"
+    - ENV ANSIBLE_GALAXY_SERVER_AUTOMATION_HUB_URL="https://console.redhat.com/api/automation-hub/"
+    - ENV ANSIBLE_GALAXY_SERVER_AUTOMATION_HUB_AUTH_URL="https://sso.redhat.com/auth/realms/redhat-external/protocol/openid-connect/token"
+    - ENV ANSIBLE_GALAXY_SERVER_GALAXY_URL="https://galaxy.ansible.com/"
+    - ARG ANSIBLE_GALAXY_SERVER_AUTOMATION_HUB_TOKEN
   prepend_final: |
+    COPY ansible.cfg /etc/ansible/ansible.cfg
     COPY gcp-ssh-wrapper.sh /usr/local/bin/gcp-ssh-wrapper
     COPY google-cloud-sdk.repo /etc/yum.repos.d/
     RUN /usr/bin/microdnf install -y google-cloud-cli

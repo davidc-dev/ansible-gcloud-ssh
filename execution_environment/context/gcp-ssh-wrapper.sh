@@ -9,7 +9,7 @@
 host="${@: -2: 1}"
 cmd="${@: -1: 1}"
 service_account=$(curl -v -w "\n" -H "Metadata-Flavor: Google" http://169.254.169.254/computeMetadata/v1/instance/service-accounts/default/email)
-username="${service_account%@*}"
+username="${GCP_SERVICE_ACCOUNT%@*:-${service_account%@*}}"
 # Unfortunately ansible has hardcoded ssh options, so we need to filter these out
 # It's an ugly hack, but for now we'll only accept the options starting with '--'
 declare -a opts

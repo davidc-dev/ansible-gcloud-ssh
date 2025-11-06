@@ -1,2 +1,21 @@
 collections:
   - name: google.cloud
+  - name: ansible.controller
+    version: '>=4.7.4'
+  - name: community.vmware
+  - name: vmware.vmware_rest
+  - name: awx.awx
+  - name: containers.podman
+  - name: ansible.posix
+  - name: fedora.linux_system_roles
+  - name: epfl_si.rhel
+  - name: infra.ah_configuration
+  - name: infra.controller_configuration
+  - name: redhat_cop.controller_configuration
+  - name: community.general
+  - name: ansible.windows
+  - name: chocolatey.chocolatey
+  - name: community.windows
+  - name: ansible.windows
+  - name: dynatrace.oneagent
+  - name: servicenow.itsm
