@@ -1,16 +1,12 @@
 #!/bin/bash
-# This is a wrapper script allowing to use GCP's IAP SSH option to connect
-# to our servers.
-
-# Ansible passes a large number of SSH parameters along with the hostname as the
-# second to last argument and the command as the last. We will pop the last two
-# arguments off of the list and then pass all of the other SSH flags through
-# without modification:
+# SSH wrapper script for Ansible.  Executes gcloud compute ssh for connecting to GCP instances
 host="${@: -2: 1}"
 cmd="${@: -1: 1}"
+# Get attached service account from instance metadata
 service_account=$(curl -v -w "\n" -H "Metadata-Flavor: Google" http://169.254.169.254/computeMetadata/v1/instance/service-accounts/default/email)
+# IF GCP_SERVICE_ACCOUNT var defined, use it, otherwise use discovered service account
 username="${GCP_SERVICE_ACCOUNT%@*:-${service_account%@*}}"
-# Unfortunately ansible has hardcoded ssh options, so we need to filter these out
+# Unfortunately, ansible has hardcoded ssh options, so we need to filter these out
 # It's an ugly hack, but for now we'll only accept the options starting with '--'
 declare -a opts
 for ssh_arg in "${@: 1: $# -3}" ; do
